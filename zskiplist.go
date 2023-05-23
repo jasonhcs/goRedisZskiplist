@@ -63,3 +63,8 @@ func (this *Zskiplist) HeaderObj() *ZskiplistNode {
 func (this *Zskiplist) TailObj() *ZskiplistNode {
 	return this.tail
 }
+
+// 节点数量
+func (this *Zskiplist) Length() uint64 {
+	return this.length
+}
