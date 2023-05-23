@@ -2,26 +2,26 @@ package goRedisZskiplist
 
 type zskiplistLevel struct {
 	//节点在该层的下一个节点
-	forward *zskiplistNode
+	forward *ZskiplistNode
 	//节点距离该层下一个节点的距离
 	span uint
 }
 
-type zskiplistNode struct {
+type ZskiplistNode struct {
 	//节点内容
-	obj interface{}
+	Obj interface{}
 	//节点分数（链表按照分数从下到大排序）
-	score float64
+	Score float64
 	//上一个节点
-	backward *zskiplistNode
+	Backward *ZskiplistNode
 	//该节点在各层的信息
-	level []zskiplistLevel
+	Level []zskiplistLevel
 }
 
-func createNode(level int, score float64, obj interface{}) *zskiplistNode {
-	zn := new(zskiplistNode)
-	zn.level = make([]zskiplistLevel, level)
-	zn.score = score
-	zn.obj = obj
+func createNode(level int, score float64, obj interface{}) *ZskiplistNode {
+	zn := new(ZskiplistNode)
+	zn.Level = make([]zskiplistLevel, level)
+	zn.Score = score
+	zn.Obj = obj
 	return zn
 }
