@@ -35,7 +35,7 @@ func Create() *Zskiplist {
 func (this *Zskiplist) NodeList() []*ZskiplistNode {
 	nodeList := []*ZskiplistNode{}
 	curNode := this.tail
-	for curNode != nil {
+	for curNode != nil && curNode != this.header {
 		nodeList = append(nodeList, curNode)
 		curNode = curNode.Backward
 	}
@@ -43,11 +43,12 @@ func (this *Zskiplist) NodeList() []*ZskiplistNode {
 }
 
 // 头结点(最小)
-func (this *Zskiplist) HeaderNode() *ZskiplistNode {
-	return this.header
+// 注：初始化头结点不存储数据
+func (this *Zskiplist) HeaderObj() *ZskiplistNode {
+	return this.header.Backward
 }
 
 // 尾结点(最大)
-func (this *Zskiplist) TailNode() *ZskiplistNode {
+func (this *Zskiplist) TailObj() *ZskiplistNode {
 	return this.tail
 }
