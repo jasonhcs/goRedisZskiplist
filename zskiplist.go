@@ -74,55 +74,77 @@ func (this *Zskiplist) Level() int {
 	return this.level
 }
 
-func (zsl *Zskiplist) RemoveHeader() {
-	if zsl.length == 0 {
+func (this *Zskiplist) RemoveHeader() {
+	if this.length == 0 {
 		return
 	}
-	x := zsl.header.Level[0].Forward
+	x := this.header.Level[0].Forward
 	if x == nil {
 		return
 	}
-	for i := 0; i < zsl.level; i++ {
-		if zsl.header.Level[i].Forward != x {
+	for i := 0; i < this.level; i++ {
+		if this.header.Level[i].Forward != x {
 			break
 		}
-		zsl.header.Level[i].Forward = x.Level[i].Forward
+		this.header.Level[i].Forward = x.Level[i].Forward
 	}
 	if x.Level[0].Forward != nil {
 		x.Level[0].Forward.Backward = nil
 	} else {
-		zsl.tail = x.Backward
+		this.tail = x.Backward
 	}
-	for zsl.level > 1 && zsl.header.Level[zsl.level-1].Forward == nil {
-		zsl.level--
+	for this.level > 1 && this.header.Level[this.level-1].Forward == nil {
+		this.level--
 	}
-	zsl.length--
+	this.length--
 }
 
-func (zsl *Zskiplist) RemoveTail() {
-	if zsl.length == 0 {
+func (this *Zskiplist) RemoveTail() {
+	if this.length == 0 {
 		return
 	}
-	x := zsl.tail
+	x := this.tail
 	if x == nil {
 		return
 	}
-	for i := 0; i < zsl.level; i++ {
-		if zsl.header.Level[i].Forward == nil || zsl.header.Level[i].Forward == x {
-			zsl.header.Level[i].Forward = nil
+	for i := 0; i < this.level; i++ {
+		if this.header.Level[i].Forward == nil || this.header.Level[i].Forward == x {
+			this.header.Level[i].Forward = nil
 		} else {
 			break
 		}
 	}
 	if x.Backward != nil {
 		x.Backward.Level[0].Forward = nil
-		zsl.tail = x.Backward
+		this.tail = x.Backward
 	} else {
-		zsl.header.Level[0].Forward = nil
-		zsl.tail = nil
+		this.header.Level[0].Forward = nil
+		this.tail = nil
 	}
-	for zsl.level > 1 && zsl.header.Level[zsl.level-1].Forward == nil {
-		zsl.level--
+	for this.level > 1 && this.header.Level[this.level-1].Forward == nil {
+		this.level--
 	}
-	zsl.length--
+	this.length--
+}
+
+func (this *Zskiplist) RemoveNode(node *ZskiplistNode) {
+	update := make([]*ZskiplistNode, ZSKIPLIST_MAXLEVEL)
+	x := this.header
+	for i := this.level - 1; i >= 0; i-- {
+		for x.Level[i].Forward != nil && x.Level[i].Forward != node {
+			x = x.Level[i].Forward
+		}
+		update[i] = x
+	}
+	if x.Level[0].Forward != nil && x.Level[0].Forward == node {
+		for i := this.level - 1; i >= 0; i-- {
+			if update[i].Level[i].Forward == node {
+				update[i].Level[i].Forward = node.Level[i].Forward
+			}
+		}
+		for this.level > 1 && this.header.Level[this.level-1].Forward == nil {
+			this.level--
+		}
+		this.length--
+	}
 }

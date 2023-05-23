@@ -6,7 +6,7 @@ import (
 )
 
 //跳跃表插入对象
-func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
+func (zsl *Zskiplist) Insert(Score float64, obj interface{}) *ZskiplistNode {
 	//update数组用于记录新节点在每一层的插入位置（即在每一层，新节点插入在哪个节点后面）
 	update := make([]*ZskiplistNode, ZSKIPLIST_MAXLEVEL)
 	//rank数组用于记录每一层update节点和头节点的节点个数（底层节点个数），该数据用于在插入节点之后更新span
@@ -79,6 +79,7 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 	}
 	//更新跳跃表节点数量
 	zsl.length++
+	return x
 }
 
 //生成一个1-ZSKIPLIST_MAXLEVEL之间的随机数，作为节点层数
