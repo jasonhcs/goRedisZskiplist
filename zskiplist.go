@@ -73,3 +73,56 @@ func (this *Zskiplist) Length() uint64 {
 func (this *Zskiplist) Level() int {
 	return this.level
 }
+
+func (zsl *Zskiplist) RemoveHeader() {
+	if zsl.length == 0 {
+		return
+	}
+	x := zsl.header.Level[0].Forward
+	if x == nil {
+		return
+	}
+	for i := 0; i < zsl.level; i++ {
+		if zsl.header.Level[i].Forward != x {
+			break
+		}
+		zsl.header.Level[i].Forward = x.Level[i].Forward
+	}
+	if x.Level[0].Forward != nil {
+		x.Level[0].Forward.Backward = nil
+	} else {
+		zsl.tail = x.Backward
+	}
+	for zsl.level > 1 && zsl.header.Level[zsl.level-1].Forward == nil {
+		zsl.level--
+	}
+	zsl.length--
+}
+
+func (zsl *Zskiplist) RemoveTail() {
+	if zsl.length == 0 {
+		return
+	}
+	x := zsl.tail
+	if x == nil {
+		return
+	}
+	for i := 0; i < zsl.level; i++ {
+		if zsl.header.Level[i].Forward == nil || zsl.header.Level[i].Forward == x {
+			zsl.header.Level[i].Forward = nil
+		} else {
+			break
+		}
+	}
+	if x.Backward != nil {
+		x.Backward.Level[0].Forward = nil
+		zsl.tail = x.Backward
+	} else {
+		zsl.header.Level[0].Forward = nil
+		zsl.tail = nil
+	}
+	for zsl.level > 1 && zsl.header.Level[zsl.level-1].Forward == nil {
+		zsl.level--
+	}
+	zsl.length--
+}
