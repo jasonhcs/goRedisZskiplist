@@ -68,3 +68,8 @@ func (this *Zskiplist) TailObj() *ZskiplistNode {
 func (this *Zskiplist) Length() uint64 {
 	return this.length
 }
+
+// 当前最大层数
+func (this *Zskiplist) Level() int {
+	return this.level
+}
