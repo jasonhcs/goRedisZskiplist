@@ -68,6 +68,7 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 	//设置新节点的上一个节点
 	if update[0] == zsl.header {
 		x.Backward = nil
+		zsl.header.Forward = x
 	} else {
 		x.Backward = update[0]
 		update[0].Forward = x
