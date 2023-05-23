@@ -14,6 +14,8 @@ type ZskiplistNode struct {
 	Score float64
 	//上一个节点
 	Backward *ZskiplistNode
+	//下一个节点
+	Forward *ZskiplistNode
 	//该节点在各层的信息
 	Level []zskiplistLevel
 }

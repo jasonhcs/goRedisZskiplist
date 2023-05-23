@@ -70,10 +70,12 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 		x.Backward = nil
 	} else {
 		x.Backward = update[0]
+		update[0].Forward = x
 	}
 	//设置新节点的下一个节点的上一个节点
 	if x.Level[0].forward != nil {
 		x.Level[0].forward.Backward = x
+		x.Forward = x.Level[0].forward
 	} else {
 		zsl.tail = x
 	}
