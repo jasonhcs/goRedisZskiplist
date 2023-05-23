@@ -31,6 +31,7 @@ func Create() *Zskiplist {
 	return zsl
 }
 
+// 从大到小排序
 func (this *Zskiplist) NodeList() []*ZskiplistNode {
 	nodeList := []*ZskiplistNode{}
 	curNode := this.tail
@@ -39,4 +40,14 @@ func (this *Zskiplist) NodeList() []*ZskiplistNode {
 		curNode = curNode.Backward
 	}
 	return nodeList
+}
+
+// 头结点(最小)
+func (this *Zskiplist) HeaderNode() *ZskiplistNode {
+	return this.header
+}
+
+// 尾结点(最大)
+func (this *Zskiplist) TailNode() *ZskiplistNode {
+	return this.tail
 }
