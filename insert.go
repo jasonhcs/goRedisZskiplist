@@ -26,11 +26,11 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 		//如果在该层的下一个节点的评分小于新节点的评分
 		//或者评分相同，但是下一个节点存储的对象小于新节点的对象（TODO：暂未实现）
 		//则指针右移
-		for x.Level[i].forward != nil && x.Level[i].forward.Score <= Score {
+		for x.Level[i].Forward != nil && x.Level[i].Forward.Score <= Score {
 			//更新该层的rank，增加该层当前节点的span
-			rank[i] += x.Level[i].span
+			rank[i] += x.Level[i].Span
 			//将该层当前节点指向该层下一个节点
-			x = x.Level[i].forward
+			x = x.Level[i].Forward
 		}
 
 		//记录该层的update节点
@@ -44,7 +44,7 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 		for i := zsl.level; i < Level; i++ {
 			rank[i] = 0
 			update[i] = zsl.header
-			update[i].Level[i].span = uint(zsl.length)
+			update[i].Level[i].Span = uint(zsl.length)
 		}
 		zsl.level = Level
 	}
@@ -54,16 +54,16 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 	x = createNode(Level, Score, obj)
 	//在每一层插入新节点
 	for i := 0; i < Level; i++ {
-		x.Level[i].forward = update[i].Level[i].forward
-		update[i].Level[i].forward = x
+		x.Level[i].Forward = update[i].Level[i].Forward
+		update[i].Level[i].Forward = x
 
 		//调整新节点上一个节点的span，计算新节点的span
-		x.Level[i].span = update[i].Level[i].span - (rank[0] - rank[i])
-		update[i].Level[i].span = rank[0] - rank[1] + 1
+		x.Level[i].Span = update[i].Level[i].Span - (rank[0] - rank[i])
+		update[i].Level[i].Span = rank[0] - rank[1] + 1
 	}
 	//如果Level小于原跳跃表的Level，还需要把Level上面那些层的update节点的span+1
 	for i := Level; i < zsl.level; i++ {
-		update[i].Level[i].span++
+		update[i].Level[i].Span++
 	}
 	//设置新节点的上一个节点
 	if update[0] == zsl.header {
@@ -72,8 +72,8 @@ func (zsl *Zskiplist) Insert(Score float64, obj interface{}) {
 		x.Backward = update[0]
 	}
 	//设置新节点的下一个节点的上一个节点
-	if x.Level[0].forward != nil {
-		x.Level[0].forward.Backward = x
+	if x.Level[0].Forward != nil {
+		x.Level[0].Forward.Backward = x
 	} else {
 		zsl.tail = x
 	}

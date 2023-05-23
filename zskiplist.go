@@ -21,10 +21,10 @@ func Create() *Zskiplist {
 	zsl.level = 1
 	//初始化头节点（头节点不用于存储数据）
 	zsl.header = new(ZskiplistNode)
-	zsl.header.Level = make([]zskiplistLevel, ZSKIPLIST_MAXLEVEL)
+	zsl.header.Level = make([]ZskiplistLevel, ZSKIPLIST_MAXLEVEL)
 	for i := 0; i < ZSKIPLIST_MAXLEVEL; i++ {
-		zsl.header.Level[i].forward = nil
-		zsl.header.Level[i].span = 0
+		zsl.header.Level[i].Forward = nil
+		zsl.header.Level[i].Span = 0
 	}
 	zsl.header.Backward = nil
 	zsl.tail = nil
@@ -34,10 +34,10 @@ func Create() *Zskiplist {
 // 从小到大排序列表
 func (this *Zskiplist) UpNodeList() []*ZskiplistNode {
 	nodeList := []*ZskiplistNode{}
-	curNode := this.header.Level[0].forward
+	curNode := this.header.Level[0].Forward
 	for curNode != nil {
 		nodeList = append(nodeList, curNode)
-		curNode = curNode.Level[0].forward
+		curNode = curNode.Level[0].Forward
 	}
 	return nodeList
 }
@@ -56,7 +56,7 @@ func (this *Zskiplist) DownNodeList() []*ZskiplistNode {
 // 头结点(最小)
 // 注：初始化头结点不存储数据
 func (this *Zskiplist) HeaderObj() *ZskiplistNode {
-	return this.header.Level[0].forward
+	return this.header.Level[0].Forward
 }
 
 // 尾结点(最大)
